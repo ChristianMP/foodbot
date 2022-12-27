@@ -1,0 +1,43 @@
+{
+  "name": "food",
+  "version": "1.0.0",
+  "description": "",
+  "main": "today.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "npx nodemon",
+    "copy-files": "copyfiles -E -V resource/*.md build/",
+    "build": "rimraf ./build && tsc && npm run copy-files",
+    "weekplan": "npm run build && node -r dotenv/config build/weekplan.js",
+    "today": "npm run build && node -r dotenv/config build/today.js",
+    "fivemin": "npm run build && node -r dotenv/config build/fivemin.js",
+    "cron": "npm run build && node -r dotenv/config build/cron.js",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "author": "Christian M. Pedersen",
+  "license": "ISC",
+  "dependencies": {
+    "@netlify/functions": "^1.3.0",
+    "@slack/web-api": "^6.8.0",
+    "@types/node": "^18.11.17",
+    "@types/uuid": "^9.0.0",
+    "axios": "^1.2.1",
+    "dotenv": "^16.0.3",
+    "html-to-text": "^9.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "gts": "^3.1.1",
+    "nodemon": "^2.0.20",
+    "rimraf": "^3.0.2"
+  }
+}

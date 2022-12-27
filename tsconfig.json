@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["es6"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "rootDirs": [
+      "src",
+      "resource"
+    ],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "outDir": "build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "build",
+    "node_modules",
+    "netlify"
+  ]
+}

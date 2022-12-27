@@ -1,0 +1,14 @@
+[functions]
+
+# Include the giphys markdown file
+included_files = ["resource/giphys.md"]
+
+# Netlify only supports UTC, so we double schedule for DST compensation
+[functions.fivemin]
+schedule = "55 8,9 * * 1-5"
+
+[functions.today]
+schedule = "0 7,8 * * 1-5"
+
+[functions.weekplan]
+schedule = "0 12,13 * * 5"
