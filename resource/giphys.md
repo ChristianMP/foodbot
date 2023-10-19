@@ -10,6 +10,8 @@
 
 ![Cow](https://media.giphy.com/media/FT6DYlscgddh8cTR6d/giphy.gif)
 
+![Cow](https://media.giphy.com/media/gnDcSZk8G8scgD47LO/giphy-downsized.gif)
+
 # Pig
 
 ![Pig](https://media.giphy.com/media/TRl4eNrNjDuXC/giphy.gif)
@@ -24,7 +26,7 @@
 
 ![Pig](https://media.giphy.com/media/7zxeIxLtWjRPj8LqwX/giphy.gif)
 
-![Pig](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2FzNWI1b21ic3ByNHR6cXE3Z2l2MW1zcDkwaG0xbjRkOWNkMml1biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ThCpqjXJw862c/giphy.gif)
+![Pig](https://media.giphy.com/media/ThCpqjXJw862c/giphy.gif)
 
 # Turkey
 
@@ -37,6 +39,8 @@
 ![Turkey](https://media.giphy.com/media/uaqGoURxE9TNe2QPWg/giphy.gif)
 
 ![Turkey](https://media.giphy.com/media/l3mZo9oAIQflshUfC/giphy.gif)
+
+![Turkey](https://media.giphy.com/media/XRx6pIkfGMzKg/giphy.gif)
 
 # Chicken
 
@@ -121,3 +125,5 @@
 ![NoTheme](https://media.giphy.com/media/ZgULzq4qhqafhSCBA0/giphy.gif)
 
 ![NoTheme](https://media.giphy.com/media/EDV30lQQ9VW5q/giphy.gif)
+
+![NoTheme](https://media.giphy.com/media/FyKfqRxVbzciY/giphy.gif)
