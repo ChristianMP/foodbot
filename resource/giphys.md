@@ -1,3 +1,9 @@
+# Calf
+
+![Calf](https://media.giphy.com/media/PjfGdlSfYKO8TKHt2c/giphy.gif)
+
+![Calf](https://media.giphy.com/media/kFIBUEvJ3jKUHr2DdJ/giphy.gif)
+
 # Cow
 
 ![Cow](https://media.giphy.com/media/h55EUEsTG9224/giphy.gif)
