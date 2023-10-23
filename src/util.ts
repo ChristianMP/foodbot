@@ -11,6 +11,8 @@ export function convertIcon(iconText: string): string {
   switch (icon) {
     case 'Ko':
       return ':cow2:';
+    case 'Kalv':
+      return ':calf:';
     case 'Gris':
       return ':pig2:';
     case 'Kylling':
