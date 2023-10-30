@@ -22,7 +22,7 @@ export function convertIcon(iconText: string): string {
     case 'Kalkun':
       return ':turkey:';
     default:
-      return '';
+      return ':broccoli:';
   }
 }
 
@@ -92,7 +92,11 @@ export async function convertToMenuObj(text: string) {
 }
 
 export function getRandomGifLink(type: string): string {
-  const theme = type.length > 0 ? type.toLocaleLowerCase() : 'notheme';
+  let theme = type.length > 0 ? type.toLocaleLowerCase() : 'notheme';
+  if (theme === ':broccoli:') {
+    theme = 'vegan';
+  }
+
   const mdFile = readFileSync('resource/giphys.md').toString();
   const images = mdFile.split('\n');
   const filter = theme.replace(/[^a-z]/g, '');
