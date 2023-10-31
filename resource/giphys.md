@@ -62,7 +62,7 @@
 
 ![Chicken](https://media.giphy.com/media/oOTyWSCIDXxwA/giphy.gif)
 
-![Chicken](https://media.giphy.com/media/l08SqWKuJlyeLkYfLE/giphy-downsized-large.gif)
+![Chicken](https://media.giphy.com/media/l08SqWKuJlyeLkYfLE/giphy-downsized.gif)
 
 # Fish
 
@@ -70,7 +70,7 @@
 
 ![Fish](https://media.giphy.com/media/kTZBUjdRlZB3G/giphy.gif)
 
-![Fish](https://media.giphy.com/media/jOcIwQiKUBn2g/giphy-downsized-large.gif)
+![Fish](https://media.giphy.com/media/jOcIwQiKUBn2g/giphy-downsized.gif)
 
 ![Fish](https://media.giphy.com/media/11QEuO6MtKCl6E/giphy.gif)
 
@@ -82,11 +82,11 @@
 
 ![Vegan](https://media.giphy.com/media/hKyroc5P7axuU/giphy.gif)
 
-![Vegan](https://media.giphy.com/media/yWTrzwWVS9x1zHPIwT/giphy.gif)
+![Vegan](https://media.giphy.com/media/yWTrzwWVS9x1zHPIwT/giphy-downsized.gif)
 
 ![Vegan](https://media.giphy.com/media/IBd4FBqsP2hWg/giphy.gif)
 
-![Vegan](https://media.giphy.com/media/54Y38YdCPe58XA0FpJ/giphy-downsized-large.gif)
+![Vegan](https://media.giphy.com/media/54Y38YdCPe58XA0FpJ/giphy-downsized.gif)
 
 # Five minute warning
 
