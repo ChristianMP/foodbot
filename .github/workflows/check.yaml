@@ -1,0 +1,43 @@
+on: push
+name: Checks
+
+jobs:
+  sizes:
+    name: Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout source code
+      - uses: actions/github-script@v6
+        name: Check sizes
+        with:
+          script: |
+            const {promises: fs} = require('fs');
+
+            const MAX_SIZE = 4e6
+            const giffile = "resource/giphys.md"
+            const pattern = /!\[(\w+)]\(([^)]+)\)/g
+
+            const get_size = async (url) => {
+              const response = await fetch(url, {method: 'HEAD'})
+              return [url, parseInt(response.headers.get('Content-Length'))]
+            }
+
+            const buf = await fs.readFile(giffile)
+            const links = []
+            let bad = 0
+
+            for (const m of buf.toString().matchAll(pattern)) {
+              links.push(m[2])
+            }
+
+            for (const [link, size] of await Promise.all(links.map(get_size))) {
+              if (size > MAX_SIZE) {
+                core.error(`${link}: ${size}`)
+                bad += 1
+              }
+            }
+
+            if (bad) {
+              core.setFailed(`${bad} images are larger than ${MAX_SIZE} bytes`)
+            }
