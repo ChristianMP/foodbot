@@ -46,7 +46,7 @@ export async function translateDaToEn(text: string) {
     params: {
       'api-version': '3.0',
       from: 'da',
-      to: ['en'],
+      to: 'en',
     },
   };
 
