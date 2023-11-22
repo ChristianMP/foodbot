@@ -27,7 +27,7 @@
     "@slack/web-api": "^6.8.0",
     "@types/node": "^18.11.17",
     "@types/uuid": "^9.0.0",
-    "axios": "^1.2.1",
+    "axios": "^1.6.2",
     "dotenv": "^16.0.3",
     "html-to-text": "^9.0.3",
     "ts-node": "^10.9.1",
