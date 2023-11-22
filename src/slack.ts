@@ -2,6 +2,7 @@ import {Block, KnownBlock, WebClient} from '@slack/web-api';
 
 const web = new WebClient(process.env.SLACK_TOKEN);
 
+/** Gets the conversation IDs the bot affiliated with */
 export async function getConversations(): Promise<string[]> {
   const result = await web.conversations.list();
   const ids: string[] = [];
@@ -19,6 +20,12 @@ export async function getConversations(): Promise<string[]> {
   return ids;
 }
 
+/**
+ * Publishes a message to the given conversation ID.
+ * @param id The conversation ID.
+ * @param text The fallback text used for notifications.
+ * @param blocks The message blocks.
+ */
 export async function publishMessage(
   id: string,
   text: string,
