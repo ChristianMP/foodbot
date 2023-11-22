@@ -2,6 +2,11 @@ import axios from 'axios';
 import {readFileSync} from 'fs';
 import {v4 as uuidv4} from 'uuid';
 
+/**
+ * Converts the PNG icon filename to a Slack emoji.
+ * @param iconText The icon file path and name.
+ * @returns The corrosponding Slack emoji.
+ */
 export function convertIcon(iconText: string): string {
   const icon = iconText
     .substring(iconText.lastIndexOf('/') + 1)
@@ -26,6 +31,7 @@ export function convertIcon(iconText: string): string {
   }
 }
 
+/** Translates the given text from Danish to English. */
 export async function translateDaToEn(text: string) {
   if (text === '') {
     return '';
@@ -70,6 +76,12 @@ export async function translateDaToEn(text: string) {
   return result;
 }
 
+/**
+ * Converts the menu item to a menu object with converted icon and translated
+ * text to be used for the Slack message.
+ * @param text The menu item text.
+ * @returns The menu object.
+ */
 export async function convertToMenuObj(text: string) {
   const iconText = text.substring(text.indexOf('['), text.indexOf(']') + 1);
   let cleanedText = text.replace(iconText, '').trim();
@@ -91,6 +103,11 @@ export async function convertToMenuObj(text: string) {
   };
 }
 
+/**
+ * Returns a random gif link from the giphys.md file based on the Slack emoji.
+ * @param type The Slack emoji to be used as a theme.
+ * @returns The gif link.
+ */
 export function getRandomGifLink(type: string): string {
   let theme = type.length > 0 ? type.toLocaleLowerCase() : 'notheme';
   if (theme === ':broccoli:') {
