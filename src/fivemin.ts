@@ -4,7 +4,7 @@ import {getRandomGifLink} from './util';
 export async function main() {
   console.log('Building five minute warning announcement');
 
-  const randomGif = getRandomGifLink('FiveMin');
+  const randomGif = await getRandomGifLink('FiveMin');
 
   const blocks = [
     {
@@ -29,4 +29,15 @@ export async function main() {
   for (const conversation of conversations) {
     await publishMessage(conversation, 'Frokost / Lunch : 5 min', blocks);
   }
+}
+
+if (require.main === module) {
+  /* eslint no-process-exit: "off" */
+  main().then(
+    () => process.exit(0),
+    err => {
+      console.error(err);
+      process.exit(1);
+    }
+  );
 }
