@@ -1,6 +1,4 @@
-const {convert} = require('html-to-text');
-
-import {convertToMenuObj, getIssMenu} from './util';
+import {convertToMenus, getIssMenu} from './util';
 import {getConversations, publishMessage} from './slack';
 
 export async function main() {
@@ -11,35 +9,10 @@ export async function main() {
     return;
   }
 
-  const text: string = convert(html, {
-    wordwrap: null,
-  });
-
-  const weekNumber = text
-    .substring(text.indexOf('Menuplan'), text.indexOf('Mandag'))
-    .replace(/\D/g, '');
-
-  const mondayText = text
-    .substring(text.indexOf('Mandag') + 6, text.indexOf('Tirsdag'))
-    .trim();
-  const tuesdayText = text
-    .substring(text.indexOf('Tirsdag') + 7, text.indexOf('Onsdag'))
-    .trim();
-  const wednesdayText = text
-    .substring(text.indexOf('Onsdag') + 6, text.indexOf('Torsdag'))
-    .trim();
-  const thursdayText = text
-    .substring(text.indexOf('Torsdag') + 7, text.indexOf('Fredag'))
-    .trim();
-  const fridayText = text
-    .substring(text.indexOf('Fredag') + 6, text.indexOf('-------'))
-    .trim();
-
-  const monday = await convertToMenuObj(mondayText);
-  const tuesday = await convertToMenuObj(tuesdayText);
-  const wednesday = await convertToMenuObj(wednesdayText);
-  const thursday = await convertToMenuObj(thursdayText);
-  const friday = await convertToMenuObj(fridayText);
+  const {
+    menus: [monday, tuesday, wednesday, thursday, friday],
+    weekNumber,
+  } = await convertToMenus(html);
 
   const blocks = [
     {
@@ -93,4 +66,15 @@ export async function main() {
   for (const conversation of conversations) {
     await publishMessage(conversation, `Menu uge / week ${weekNumber}`, blocks);
   }
+}
+
+if (require.main === module) {
+  /* eslint no-process-exit: "off" */
+  main().then(
+    () => process.exit(0),
+    err => {
+      console.error(err);
+      process.exit(1);
+    }
+  );
 }

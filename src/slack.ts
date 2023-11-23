@@ -4,6 +4,9 @@ const web = new WebClient(process.env.SLACK_TOKEN);
 
 /** Gets the conversation IDs the bot affiliated with */
 export async function getConversations(): Promise<string[]> {
+  if (!process.env.SLACK_TOKEN) {
+    return ['#test'];
+  }
   const result = await web.conversations.list();
   const ids: string[] = [];
 
@@ -31,12 +34,19 @@ export async function publishMessage(
   text: string,
   blocks: (Block | KnownBlock)[]
 ) {
+  const post = {
+    channel: id,
+    text: text,
+    blocks: blocks,
+  };
+
+  if (!process.env.SLACK_TOKEN) {
+    console.log('Not sending: ' + JSON.stringify(post, null, 2));
+    return;
+  }
+
   try {
-    await web.chat.postMessage({
-      channel: id,
-      text: text,
-      blocks: blocks,
-    });
+    await web.chat.postMessage(post);
 
     console.log(`Sent ${text} to Slack`);
   } catch (error) {
