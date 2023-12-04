@@ -21,6 +21,8 @@ export function convertIcon(iconText: string): string {
       return ':fish:';
     case 'Kalkun':
       return ':turkey:';
+    case 'Vildt':
+      return ':deer:';
     default:
       return ':broccoli:';
   }
@@ -95,6 +97,8 @@ export function getRandomGifLink(type: string): string {
   let theme = type.length > 0 ? type.toLocaleLowerCase() : 'notheme';
   if (theme === ':broccoli:') {
     theme = 'vegan';
+  } else if (theme === ':deer:') {
+    theme = 'venison';
   }
 
   const mdFile = readFileSync('resource/giphys.md').toString();

@@ -88,6 +88,10 @@
 
 ![Vegan](https://media.giphy.com/media/54Y38YdCPe58XA0FpJ/giphy-downsized.gif)
 
+# Venison
+
+![Venison](https://media.giphy.com/media/CYu6DJXVazUL8wxxUz/giphy-downsized.gif)
+
 # Five minute warning
 
 ![FiveMin](https://media.giphy.com/media/hVP3ippY6MdtJ2Yd3X/giphy-downsized.gif)
