@@ -1,10 +1,7 @@
-import {Handler, HandlerEvent, HandlerContext} from '@netlify/functions';
+import {Handler, HandlerEvent} from '@netlify/functions';
 import {main} from '../../src/today';
 
-const handler: Handler = async (
-  event: HandlerEvent,
-  context: HandlerContext
-) => {
+const handler: Handler = async (event: HandlerEvent) => {
   console.log('Received event:', event);
 
   // Ensure DST corrected execution
