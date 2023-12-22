@@ -1,7 +1,8 @@
 const {convert} = require('html-to-text');
 
-import {convertToMenuObj, getIssMenu} from './util';
+import {getIssMenu} from './util';
 import {getConversations, publishMessage} from './slack';
+import {OpenAi} from './openai';
 
 export async function main() {
   console.log('Building weekplan announcement');
@@ -15,9 +16,13 @@ export async function main() {
     wordwrap: null,
   });
 
-  const weekNumber = text
-    .substring(text.indexOf('Menuplan'), text.indexOf('Mandag'))
-    .replace(/\D/g, '');
+  let weekNumber;
+  const weekNumberRgx = text.match(/[Uu]ge\s\d\d/g);
+  if (weekNumberRgx === null) {
+    weekNumber = 'unknown';
+  } else {
+    weekNumber = weekNumberRgx[0].replace(/\D/g, '');
+  }
 
   const mondayText = text
     .substring(text.indexOf('Mandag') + 6, text.indexOf('Tirsdag'))
@@ -35,18 +40,24 @@ export async function main() {
     .substring(text.indexOf('Fredag') + 6, text.indexOf('-------'))
     .trim();
 
-  const monday = await convertToMenuObj(mondayText);
-  const tuesday = await convertToMenuObj(tuesdayText);
-  const wednesday = await convertToMenuObj(wednesdayText);
-  const thursday = await convertToMenuObj(thursdayText);
-  const friday = await convertToMenuObj(fridayText);
+  const ai = new OpenAi();
+  const mondayEmojies = await ai.getEmojies(mondayText);
+  const mondayTranslation = await ai.translateDaToEn(mondayText);
+  const tuesdayEmojies = await ai.getEmojies(tuesdayText);
+  const tuesdayTranslation = await ai.translateDaToEn(tuesdayText);
+  const wednesdayEmojies = await ai.getEmojies(wednesdayText);
+  const wednesdayTranslation = await ai.translateDaToEn(wednesdayText);
+  const thursdayEmojies = await ai.getEmojies(thursdayText);
+  const thursdayTranslation = await ai.translateDaToEn(thursdayText);
+  const fridayEmojies = await ai.getEmojies(fridayText);
+  const fridayTranslation = await ai.translateDaToEn(fridayText);
 
   const blocks = [
     {
       type: 'header',
       text: {
         type: 'plain_text',
-        text: `Menu uge / week ${weekNumber}`,
+        text: `Menu week ${weekNumber}`,
       },
     },
     {
@@ -56,41 +67,41 @@ export async function main() {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Mandag / Monday ${monday.icon}*\n>:flag-dk: ${monday.text.da}\n>\n>:flag-gb: ${monday.text.en}`,
+        text: `>*Monday ${mondayEmojies}*\n>:flag-dk: ${mondayText}\n>\n>:flag-gb: ${mondayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Tirsdag / Tuesday ${tuesday.icon}*\n>:flag-dk: ${tuesday.text.da}\n>\n>:flag-gb: ${tuesday.text.en}`,
+        text: `>*Tuesday ${tuesdayEmojies}*\n>:flag-dk: ${tuesdayText}\n>\n>:flag-gb: ${tuesdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Onsdag / Wednesday ${wednesday.icon}*\n>:flag-dk: ${wednesday.text.da}\n>\n>:flag-gb: ${wednesday.text.en}`,
+        text: `>*Wednesday ${wednesdayEmojies}*\n>:flag-dk: ${wednesdayText}\n>\n>:flag-gb: ${wednesdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Torsdag / Thursday ${thursday.icon}*\n>:flag-dk: ${thursday.text.da}\n>\n>:flag-gb: ${thursday.text.en}`,
+        text: `>*Thursday ${thursdayEmojies}*\n>:flag-dk: ${thursdayText}\n>\n>:flag-gb: ${thursdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Fredag / Friday ${friday.icon}*\n>:flag-dk: ${friday.text.da}\n>\n>:flag-gb: ${friday.text.en}`,
+        text: `>*Friday ${fridayEmojies}*\n>:flag-dk: ${fridayText}\n>\n>:flag-gb: ${fridayTranslation}`,
       },
     },
   ];
 
   const conversations = await getConversations();
   for (const conversation of conversations) {
-    await publishMessage(conversation, `Menu uge / week ${weekNumber}`, blocks);
+    await publishMessage(conversation, `Lunch menu week ${weekNumber}`, blocks);
   }
 }
