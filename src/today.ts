@@ -1,14 +1,129 @@
 const {convert} = require('html-to-text');
 
-import {convertToMenuObj, getIssMenu} from './util';
+import {getIssMenu} from './util';
 import {getConversations, publishMessage} from './slack';
+import {OpenAi} from './openai';
 
 export async function main() {
   console.log('Building dish of the day announcement');
 
+  const menuText = await getTodaysMenu();
+
+  if (menuText.toLowerCase() === 'Lukket') {
+    await announceClosed();
+  } else {
+    announceMenu(menuText);
+  }
+
+  async function announceClosed() {
+    const blocks = [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: 'Dish of the day',
+          emoji: true,
+        },
+      },
+    ];
+
+    const conversations = await getConversations();
+    for (const conversation of conversations) {
+      await publishMessage(conversation, 'The cantine is closed today', blocks);
+    }
+  }
+
+  async function announceMenu(menuText: string) {
+    const ai = new OpenAi();
+    const emojies = await ai.getEmojies(menuText);
+    const translation = await ai.translateDaToEn(menuText);
+    const funFact = await ai.getFunFact(menuText);
+    //const imageUrl = await ai.generateImage(translation);
+
+    const blocks = [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: 'Dish of the day',
+          emoji: true,
+        },
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'plain_text',
+            text: emojies,
+            emoji: true,
+          },
+        ],
+      },
+      {
+        type: 'divider',
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `:flag-dk: ${menuText}\n\n:flag-gb: ${translation}`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*Fun fact:*\n${funFact}`.replace(/\n/g, '\n>'),
+        },
+      },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: '_Generated using gpt-35-turbo_',
+          },
+        ],
+      },
+      /* Pending migration or Netlify function runtime fix (max 10 secs)
+      {
+        type: "image",
+        title: {
+          type: "plain_text",
+          text: ":robot_face: DALL·E 3 generated image",
+          emoji: true
+        },
+        image_url: menuObj.attachment,
+        alt_text: "marg"
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "plain_text",
+            text: "Disclaimer: Generated image is not representative of how the cantine will serve the dish.",
+            emoji: true
+          }
+        ]
+      }
+      */
+    ];
+
+    const conversations = await getConversations();
+    for (const conversation of conversations) {
+      await publishMessage(
+        conversation,
+        `Dish of the day: ${translation}`,
+        blocks
+      );
+    }
+  }
+}
+
+async function getTodaysMenu(): Promise<string> {
   const html = await getIssMenu(1);
   if (html === '') {
-    return;
+    throw new Error('Failed to retrieve menu');
   }
 
   const text: string = convert(html, {
@@ -44,40 +159,8 @@ export async function main() {
         .trim();
       break;
     default:
-      console.log('Not a weekday - returning');
-      return;
+      throw new Error('Not a weekday');
   }
 
-  const menuObj = await convertToMenuObj(menuText);
-
-  const blocks = [
-    {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: `Dagens ret / Dish of the day ${menuObj.icon}`,
-        emoji: true,
-      },
-    },
-    {
-      type: 'divider',
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `>:flag-dk: ${menuObj.text.da}\n>\n>:flag-gb: ${menuObj.text.en}`,
-      },
-      accessory: {
-        type: 'image',
-        image_url: menuObj.attachment,
-        alt_text: `${menuObj.icon}`,
-      },
-    },
-  ];
-
-  const conversations = await getConversations();
-  for (const conversation of conversations) {
-    await publishMessage(conversation, 'Dagens ret / Dish of the day', blocks);
-  }
+  return menuText;
 }
