@@ -32,7 +32,7 @@ export class OpenAi {
     );
   }
 
-  async getEmojies(menu: string): Promise<string> {
+  async getEmojis(menu: string): Promise<string> {
     if (menu === '' || menu.toLowerCase() === 'lukket') {
       return '';
     }
@@ -41,7 +41,7 @@ export class OpenAi {
       {
         role: 'system',
         content:
-          'You are an AI assistant identifying the main raw ingredients in dishes, replying ONLY with Slack emojies',
+          'You are an AI assistant identifying the main raw ingredients in dishes, replying ONLY with Slack emojis',
       },
       {
         role: 'user',
