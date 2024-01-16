@@ -41,15 +41,15 @@ export async function main() {
     .trim();
 
   const ai = new OpenAi();
-  const mondayEmojies = await ai.getEmojies(mondayText);
+  const mondayEmojis = await ai.getEmojis(mondayText);
   const mondayTranslation = await ai.translateDaToEn(mondayText);
-  const tuesdayEmojies = await ai.getEmojies(tuesdayText);
+  const tuesdayEmojis = await ai.getEmojis(tuesdayText);
   const tuesdayTranslation = await ai.translateDaToEn(tuesdayText);
-  const wednesdayEmojies = await ai.getEmojies(wednesdayText);
+  const wednesdayEmojis = await ai.getEmojis(wednesdayText);
   const wednesdayTranslation = await ai.translateDaToEn(wednesdayText);
-  const thursdayEmojies = await ai.getEmojies(thursdayText);
+  const thursdayEmojis = await ai.getEmojis(thursdayText);
   const thursdayTranslation = await ai.translateDaToEn(thursdayText);
-  const fridayEmojies = await ai.getEmojies(fridayText);
+  const fridayEmojis = await ai.getEmojis(fridayText);
   const fridayTranslation = await ai.translateDaToEn(fridayText);
 
   const blocks = [
@@ -67,35 +67,35 @@ export async function main() {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Monday ${mondayEmojies}*\n>:flag-dk: ${mondayText}\n>\n>:flag-gb: ${mondayTranslation}`,
+        text: `>*Monday ${mondayEmojis}*\n>:flag-dk: ${mondayText}\n>\n>:flag-gb: ${mondayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Tuesday ${tuesdayEmojies}*\n>:flag-dk: ${tuesdayText}\n>\n>:flag-gb: ${tuesdayTranslation}`,
+        text: `>*Tuesday ${tuesdayEmojis}*\n>:flag-dk: ${tuesdayText}\n>\n>:flag-gb: ${tuesdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Wednesday ${wednesdayEmojies}*\n>:flag-dk: ${wednesdayText}\n>\n>:flag-gb: ${wednesdayTranslation}`,
+        text: `>*Wednesday ${wednesdayEmojis}*\n>:flag-dk: ${wednesdayText}\n>\n>:flag-gb: ${wednesdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Thursday ${thursdayEmojies}*\n>:flag-dk: ${thursdayText}\n>\n>:flag-gb: ${thursdayTranslation}`,
+        text: `>*Thursday ${thursdayEmojis}*\n>:flag-dk: ${thursdayText}\n>\n>:flag-gb: ${thursdayTranslation}`,
       },
     },
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `>*Friday ${fridayEmojies}*\n>:flag-dk: ${fridayText}\n>\n>:flag-gb: ${fridayTranslation}`,
+        text: `>*Friday ${fridayEmojis}*\n>:flag-dk: ${fridayText}\n>\n>:flag-gb: ${fridayTranslation}`,
       },
     },
   ];

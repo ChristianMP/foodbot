@@ -35,7 +35,7 @@ export async function main() {
 
   async function announceMenu(menuText: string) {
     const ai = new OpenAi();
-    const emojies = await ai.getEmojies(menuText);
+    const emojis = await ai.getEmojis(menuText);
     const translation = await ai.translateDaToEn(menuText);
     const funFact = await ai.getFunFact(menuText);
     //const imageUrl = await ai.generateImage(translation);
@@ -54,7 +54,7 @@ export async function main() {
         elements: [
           {
             type: 'plain_text',
-            text: emojies,
+            text: emojis,
             emoji: true,
           },
         ],
