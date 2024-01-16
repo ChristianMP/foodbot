@@ -23,7 +23,7 @@
   "author": "Christian M. Pedersen",
   "license": "ISC",
   "dependencies": {
-    "@azure/openai": "^1.0.0-beta.8",
+    "@azure/openai": "^1.0.0-beta.10",
     "@netlify/functions": "^2.4.1",
     "@slack/web-api": "^6.8.0",
     "@types/node": "^18.11.17",
