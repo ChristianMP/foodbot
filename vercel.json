@@ -1,0 +1,16 @@
+{
+    "crons": [
+      {
+        "path": "/api/fivemin?cron=true",
+        "schedule": "55 8,9 * * 1-5"
+      },
+      {
+        "path": "/api/today?cron=true",
+        "schedule": "0 7,8 * * 1-5"
+      },
+      {
+        "path": "/api/weekplan?cron=true",
+        "schedule": "0 12,13 * * 5"
+      }
+    ]
+  }

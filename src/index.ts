@@ -9,7 +9,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('{O.o}');
 });
 
-app.post('/api/fivemin', async (req: Request, res: Response) => {
+app.get('/api/fivemin', async (req: Request, res: Response) => {
   if (req.query.cron == 'true') {
     // Ensure DST corrected execution
     const cphDate = new Date().toLocaleString('en-US', {
@@ -25,7 +25,7 @@ app.post('/api/fivemin', async (req: Request, res: Response) => {
   res.sendStatus(202);
 });
 
-app.post('/api/today', async (req: Request, res: Response) => {
+app.get('/api/today', async (req: Request, res: Response) => {
   if (req.query.cron == 'true') {
     // Ensure DST corrected execution
     const cphDate = new Date().toLocaleString('en-US', {
@@ -41,7 +41,7 @@ app.post('/api/today', async (req: Request, res: Response) => {
   res.sendStatus(202);
 });
 
-app.post('/api/weekplan', async (req: Request, res: Response) => {
+app.get('/api/weekplan', async (req: Request, res: Response) => {
   if (req.query.cron == 'true') {
     // Ensure DST corrected execution
     const cphDate = new Date().toLocaleString('en-US', {
