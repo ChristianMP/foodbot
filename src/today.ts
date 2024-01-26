@@ -84,7 +84,7 @@ async function announceMenu(menuText: string) {
         },
       ],
     },
-    /* Pending migration or Netlify function runtime fix (max 10 secs)
+    /* Pending Vercel pro license for more runtime
       {
         type: "image",
         title: {

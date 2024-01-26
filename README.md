@@ -1,4 +1,3 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/dde35cf9-8199-4b45-a4c0-f99fe0e1ae9c/deploy-status)](https://app.netlify.com/sites/sg-foodbot/deploys)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts)
 
 # foodbot
