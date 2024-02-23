@@ -1,5 +1,3 @@
-const {convert} = require('html-to-text');
-
 import {getIssMenu} from './util';
 import {getConversations, publishMessage} from './slack';
 import {OpenAi} from './openai';
@@ -7,17 +5,7 @@ import {OpenAi} from './openai';
 export async function main() {
   console.log('Building weekplan announcement');
 
-  const html = await getIssMenu(2);
-  if (html === '') {
-    return;
-  }
-
-  const text: string = removeIcons(
-    convert(html, {
-      wordwrap: null,
-    })
-  );
-
+  const text = await getIssMenu(2);
   let weekNumber;
   const weekNumberRgx = text.match(/[Uu]ge\s\d\d/g);
   if (weekNumberRgx === null) {
@@ -106,8 +94,4 @@ export async function main() {
   for (const conversation of conversations) {
     await publishMessage(conversation, `Lunch menu week ${weekNumber}`, blocks);
   }
-}
-
-function removeIcons(text: string): string {
-  return text.replace(/\[.*?\]/g, '');
 }
