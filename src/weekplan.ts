@@ -12,9 +12,11 @@ export async function main() {
     return;
   }
 
-  const text: string = convert(html, {
-    wordwrap: null,
-  });
+  const text: string = removeIcons(
+    convert(html, {
+      wordwrap: null,
+    })
+  );
 
   let weekNumber;
   const weekNumberRgx = text.match(/[Uu]ge\s\d\d/g);
@@ -104,4 +106,8 @@ export async function main() {
   for (const conversation of conversations) {
     await publishMessage(conversation, `Lunch menu week ${weekNumber}`, blocks);
   }
+}
+
+function removeIcons(text: string): string {
+  return text.replace(/\[.*?\]/g, '');
 }

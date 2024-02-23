@@ -35,9 +35,10 @@ export async function main() {
 
   async function announceMenu(menuText: string) {
     const ai = new OpenAi();
+    const cleanedMenuText = removeIcons(menuText);
     const emojis = await ai.getEmojis(menuText);
-    const translation = await ai.translateDaToEn(menuText);
-    const funFact = await ai.getFunFact(menuText);
+    const translation = await ai.translateDaToEn(cleanedMenuText);
+    const funFact = await ai.getFunFact(translation);
     //const imageUrl = await ai.generateImage(translation);
 
     const blocks = [
@@ -126,9 +127,11 @@ async function getTodaysMenu(): Promise<string> {
     throw new Error('Failed to retrieve menu');
   }
 
-  const text: string = convert(html, {
-    wordwrap: null,
-  });
+  const text: string = removeIcons(
+    convert(html, {
+      wordwrap: null,
+    })
+  );
 
   const now = new Date().getDay();
   let menuText: string;
@@ -161,6 +164,9 @@ async function getTodaysMenu(): Promise<string> {
     default:
       throw new Error('Not a weekday');
   }
-
   return menuText;
+}
+
+function removeIcons(text: string): string {
+  return text.replace(/\[.*?\]/g, '');
 }
