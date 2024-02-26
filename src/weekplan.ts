@@ -7,7 +7,7 @@ export async function main() {
 
   const text = await getIssMenu(2);
   let weekNumber;
-  const weekNumberRgx = text.match(/[Uu]ge\s\d\d/g);
+  const weekNumberRgx = text.match(/[Uu]ge\s\d{1,2}/g);
   if (weekNumberRgx === null) {
     weekNumber = 'unknown';
   } else {
