@@ -1,12 +1,21 @@
 on: push
-name: Checks
+name: CI
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install modules
+      run: npm install
+    - name: Run ESLint
+      run: npm run lint
+
   sizes:
     name: Images
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout source code
       - uses: actions/github-script@v6
         name: Check sizes
