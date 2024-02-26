@@ -1,5 +1,3 @@
-const {convert} = require('html-to-text');
-
 import {getIssMenu} from './util';
 import {getConversations, publishMessage} from './slack';
 import {OpenAi} from './openai';
@@ -7,17 +5,9 @@ import {OpenAi} from './openai';
 export async function main() {
   console.log('Building weekplan announcement');
 
-  const html = await getIssMenu(2);
-  if (html === '') {
-    return;
-  }
-
-  const text: string = convert(html, {
-    wordwrap: null,
-  });
-
+  const text = await getIssMenu(2);
   let weekNumber;
-  const weekNumberRgx = text.match(/[Uu]ge\s\d\d/g);
+  const weekNumberRgx = text.match(/[Uu]ge\s\d{1,2}/g);
   if (weekNumberRgx === null) {
     weekNumber = 'unknown';
   } else {
