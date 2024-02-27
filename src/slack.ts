@@ -4,7 +4,11 @@ const web = new WebClient(process.env.SLACK_TOKEN);
 
 /** Gets the conversation IDs the bot affiliated with */
 export async function getConversations(): Promise<string[]> {
-  const result = await web.conversations.list();
+  const args = {
+    exclude_archived: true,
+    types: 'public_channel, private_channel',
+  };
+  const result = await web.conversations.list(args);
   const ids: string[] = [];
 
   if (result.channels === undefined) {
