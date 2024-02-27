@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.11",
-    "@netlify/functions": "^2.4.1",
+    "@netlify/functions": "^2.6.0",
     "@slack/web-api": "^7.0.2",
     "@types/node": "^18.11.17",
     "@types/uuid": "^9.0.0",
