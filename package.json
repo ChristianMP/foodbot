@@ -29,7 +29,7 @@
     "@types/node": "^18.11.17",
     "@types/uuid": "^9.0.0",
     "axios": "^1.6.7",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.5",
     "html-to-text": "^9.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
