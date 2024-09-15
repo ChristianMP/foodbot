@@ -1,17 +1,23 @@
-import {getMenuForToday} from './util';
+import {DayMenu, getTodaysDishes} from './util';
 import {getConversations, publishMessage} from './slack';
-import {OpenAi} from './openai';
 
 export async function main() {
   console.log('Building dish of the day announcement');
 
-  const menuText = await getMenuForToday();
-
-  if (menuText.toLowerCase() === 'Lukket') {
-    await announceClosed();
-  } else {
-    announceMenu(menuText);
+  if (!process.env.MENU_URL) {
+    console.error('Missing MENU_URL environment variable');
+    return;
   }
+
+  const dishes = await getTodaysDishes(process.env.MENU_URL);
+
+  // if (menuText.toLowerCase() === 'Lukket') {
+  //   await announceClosed();
+  // } else {
+  //   announceMenu(menuText);
+  // }
+
+  await announceMenu(dishes);
 }
 
 async function announceClosed() {
@@ -32,88 +38,76 @@ async function announceClosed() {
   }
 }
 
-async function announceMenu(menuText: string) {
-  const ai = new OpenAi();
-  const emojis = await ai.getEmojis(menuText);
-  const translation = await ai.translateDaToEn(menuText);
-  const funFact = await ai.getFunFact(translation);
-  //const imageUrl = await ai.generateImage(translation);
+async function announceMenu(dayMenu: DayMenu | null) {
+  if (!dayMenu) {
+    console.error('No data for today');
+    return;
+  }
 
-  const blocks = [
-    {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: 'Dish of the day',
-        emoji: true,
-      },
-    },
-    {
-      type: 'context',
-      elements: [
-        {
-          type: 'plain_text',
-          text: emojis,
-          emoji: true,
-        },
-      ],
-    },
-    {
-      type: 'divider',
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `:flag-dk: ${menuText}\n\n:flag-gb: ${translation}`,
-      },
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `*Fun fact:*\n${funFact}`.replace(/\n/g, '\n>'),
-      },
-    },
-    {
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: '_Generated using gpt-35-turbo_',
-        },
-      ],
-    },
-    /* Pending migration or Netlify function runtime fix (max 10 secs)
-      {
-        type: "image",
-        title: {
-          type: "plain_text",
-          text: ":robot_face: DALL·E 3 generated image",
-          emoji: true
-        },
-        image_url: menuObj.attachment,
-        alt_text: "marg"
-      },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "plain_text",
-            text: "Disclaimer: Generated image is not representative of how the cantine will serve the dish.",
-            emoji: true
-          }
-        ]
-      }
-      */
-  ];
+  const blocks = createSlackBlocks(dayMenu);
 
   const conversations = await getConversations();
   for (const conversation of conversations) {
     await publishMessage(
       conversation,
-      `Dish of the day: ${translation}`,
+      `Today's Menu - ${dayMenu.date}`,
       blocks
     );
   }
+}
+
+type SlackBlock = {
+  type: string;
+  [key: string]: any;
+};
+
+function createSlackBlocks(dayMenu: DayMenu): SlackBlock[] {
+  const blocks: SlackBlock[] = [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: `Today's Menu - ${dayMenu.date}`,
+        emoji: true,
+      },
+    },
+    {
+      type: 'divider',
+    },
+  ];
+
+  dayMenu.stations.forEach((station, stationIndex) => {
+    // Add station name as a section
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*${station.name}*`,
+      },
+    });
+
+    // Add dishes for this station
+    station.dishes.forEach((dish, dishIndex) => {
+      blocks.push({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `>${dish.translated_name}\n>_Allergens: ${
+            dish.translated_allergens.length === 0
+              ? 'None'
+              : dish.translated_allergens.join(', ')
+          }_`,
+        },
+      });
+
+      // Add a divider if it's the last one in the station
+      if (dishIndex === station.dishes.length - 1) {
+        blocks.push({
+          type: 'divider',
+        });
+      }
+    });
+  });
+
+  return blocks;
 }

@@ -1,16 +1,10 @@
 import {getConversations, publishMessage} from './slack';
 import {getRandomGifLink} from './util';
-import {getMenuForToday} from './util';
 
 export async function main() {
   console.log('Building five minute warning announcement');
 
-  const menuText = await getMenuForToday();
-
-  if (menuText.toLowerCase() === 'Lukket') {
-    console.log('Cantine is closed, skipping announcement');
-    return;
-  }
+  // TODO: Check for closed after converting to FoodPlace
 
   const randomGif = getRandomGifLink('FiveMin');
 

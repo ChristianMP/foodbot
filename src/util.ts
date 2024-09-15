@@ -1,62 +1,145 @@
+import {readFileSync} from 'fs';
+import {JSDOM} from 'jsdom';
 const {convert} = require('html-to-text');
 
-import axios from 'axios';
-import {readFileSync} from 'fs';
+// Define types for our data structure
+type Allergen = {
+  id: number;
+  name: string;
+  translated_name: string;
+};
 
-export async function getIssMenu(page: number): Promise<string> {
-  try {
-    const response = await axios.get('https://issmenuplan.dk/Kundelink', {
-      params: {
-        GUID: process.env.ISS_KUNDELINK,
-        Side: page,
-      },
-    });
+type Dish = {
+  name: string;
+  translated_name: string;
+  allergens: string[];
+  translated_allergens: string[];
+};
 
-    return removeIcons(
-      convert(response.data, {
-        wordwrap: null,
-      })
-    );
-  } catch (err) {
-    throw new Error('Failed to retrieve ISS menu');
-  }
+type Station = {
+  id: number;
+  name: string;
+  image: string;
+  dishes: Dish[];
+};
+
+export type DayMenu = {
+  date: string;
+  stations: Station[];
+};
+
+function stripHtml(htmlString: string): string {
+  // Replace escaped characters (like double backslashes \\) with a single backslash
+  return htmlString.replace(/\\+/g, '\\');
 }
 
-export async function getMenuForToday(): Promise<string> {
-  const text = await getIssMenu(1);
-  const now = new Date().getDay();
-  let menuText: string;
-  switch (now) {
-    case 1:
-      menuText = text
-        .substring(text.indexOf('Mandag') + 6, text.indexOf('Tirsdag'))
-        .trim();
-      break;
-    case 2:
-      menuText = text
-        .substring(text.indexOf('Tirsdag') + 7, text.indexOf('Onsdag'))
-        .trim();
-      break;
-    case 3:
-      menuText = text
-        .substring(text.indexOf('Onsdag') + 6, text.indexOf('Torsdag'))
-        .trim();
-      break;
-    case 4:
-      menuText = text
-        .substring(text.indexOf('Torsdag') + 7, text.indexOf('Fredag'))
-        .trim();
-      break;
-    case 5:
-      menuText = text
-        .substring(text.indexOf('Fredag') + 6, text.indexOf('-------'))
-        .trim();
-      break;
-    default:
-      throw new Error('Not a weekday');
+function extractUntilScriptEnd(htmlString: string): string {
+  // Step 1: Find the index of the closing </script> tag
+  const scriptEndIndex = htmlString.indexOf(';');
+
+  // Step 2: If the </script> tag is found, slice the string up to that point
+  if (scriptEndIndex !== -1) {
+    return htmlString.slice(0, scriptEndIndex);
   }
 
-  return menuText;
+  // Step 3: If </script> tag is not found, return the whole string
+  return htmlString;
+}
+
+// Function to fetch and parse the JSON object from HTML
+async function fetchJsonFromHtml(url: string): Promise<any> {
+  const response = await fetch(url);
+  const html = await response.text();
+  const dom = new JSDOM(html);
+  const bodyContent = dom.window.document.querySelector('body');
+
+  if (bodyContent) {
+    const content = bodyContent.textContent || '';
+
+    // Look for a JSON object pattern in the content
+    const match = content.match(/window.__remixContext = ({.*})/s);
+
+    if (match && match[1]) {
+      try {
+        // Extract content before </script> and clean up the string
+        const jsonString = stripHtml(extractUntilScriptEnd(match[1]));
+        return JSON.parse(jsonString); // Parse cleaned JSON string
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        throw new Error('Invalid JSON data in HTML');
+      }
+    }
+  }
+
+  throw new Error('JSON data not found in HTML');
+}
+
+// Function to extract dishes from the parsed JSON
+function extractDishes(data: any): DayMenu | null {
+  const weekData =
+    data.routeData['routes/banner/weekmenu/$location/index'].data.data;
+
+  // Get today's date in the format "YYYY-MM-DD"
+  const today = new Date().toISOString().split('T')[0];
+
+  // Filter data for today's date
+  const todayData = weekData.filter((item: any) => item.date === today);
+
+  if (todayData.length === 0) {
+    return null; // No data for today
+  }
+
+  const dayMenu: DayMenu = {
+    date: today,
+    stations: [],
+  };
+
+  const stationMap = new Map<number, Station>();
+
+  todayData.forEach((item: any) => {
+    const stationId = item.station_name?.parent_id?.id ?? item.station_name.id;
+    let station = stationMap.get(stationId);
+    if (!station) {
+      station = {
+        id: stationId,
+        name:
+          item.station_name?.parent_id?.station_name ??
+          item.station_name.station_name,
+        image:
+          item.station_name?.parent_id?.station_image_1 ??
+          item.station_name.station_image_1,
+        dishes: [],
+      };
+      stationMap.set(stationId, station);
+    }
+
+    const dish: Dish = {
+      name: item.recipe_id.menu_info,
+      translated_name: item.recipe_id.menu_info_1,
+      allergens: item.recipe_id.allergens_list.map(
+        (a: {Allergens_id: Allergen}) => a.Allergens_id.name
+      ),
+      translated_allergens: item.recipe_id.allergens_list.map(
+        (a: {Allergens_id: Allergen}) => a.Allergens_id.translated_name
+      ),
+    };
+
+    station.dishes.push(dish);
+  });
+
+  dayMenu.stations = Array.from(stationMap.values());
+  return dayMenu;
+}
+
+// Main function to fetch and extract dishes
+export async function getTodaysDishes(url: string): Promise<DayMenu | null> {
+  try {
+    const jsonData = await fetchJsonFromHtml(url);
+    return extractDishes(jsonData);
+  } catch (error) {
+    console.error('Error fetching or parsing data:', error);
+    throw error;
+  }
 }
 
 /**
